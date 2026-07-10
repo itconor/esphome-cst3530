@@ -4,12 +4,14 @@ namespace esphome::cst3530 {
 
 static const char *const TAG = "cst3530";
 
-// 32-bit register read: write the four address bytes (no stop), then read.
+// 32-bit register read: write the four address bytes with no stop (repeated
+// start), then read. Uses the bus directly because I2CDevice::write() has no
+// stop parameter.
 bool CST3530Touchscreen::read_reg32_(uint32_t reg, uint8_t *data, uint8_t len) {
   uint8_t addr[4] = {(uint8_t) (reg >> 24), (uint8_t) (reg >> 16), (uint8_t) (reg >> 8), (uint8_t) (reg & 0xFF)};
-  if (this->write(addr, 4, false) != i2c::ERROR_OK)
+  if (this->bus_->write(this->address_, addr, 4, false) != i2c::ERROR_OK)
     return false;
-  return this->read(data, len) == i2c::ERROR_OK;
+  return this->bus_->read(this->address_, data, len) == i2c::ERROR_OK;
 }
 
 // 32-bit register write with no payload (used to ack / end a read).
