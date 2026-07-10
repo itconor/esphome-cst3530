@@ -27,14 +27,12 @@ touchscreen:
     address: 0x58
     interrupt_pin: GPIO4
     reset_pin: GPIO2
-    # Optional — map the raw 12-bit coordinates to your panel.
-    # Touch the four corners and read the "touch raw x=.. y=.." log lines.
-    calibration:
-      x_min: 0
-      x_max: 2130
-      y_min: 0
-      y_max: 3030
 ```
+
+The CST3530 reports coordinates **already scaled to the panel resolution**
+(≈0–240 × 0–320 on the 2.8" board), so no `calibration:` block is needed — the
+driver maps them 1:1 to the display. Add one only if your panel is mirrored or
+rotated (`calibration:` / `transform:` / `swap_xy` from the base touchscreen schema).
 
 ### Options
 
